@@ -76,7 +76,12 @@ const Player = (mark) => {
 }
 
 const GameController = ((players) => {
-  const boardResolution = prompt('Input dimesions of the board.');
+  let boardResolution = prompt('Input dimesions of the board (from 2 to 16).');
+  while (true) {
+    if (+boardResolution !== NaN && 2 <= +boardResolution && +boardResolution <= 16) {break} else {
+      boardResolution = prompt('Please, input the dimensions using integer between 2 and 16.');
+    }
+  }
   const gameboard = Gameboard(Number(boardResolution));
   function initiateGameLoop() {
     gameloop: while (true) {
