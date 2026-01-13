@@ -159,7 +159,7 @@ const ScreenController = (() => {
     }
   )
 
-  function drawBoard(boardResolution) {
+  function drawBoard(boardResolution = 3) {
     board.innerHTML = "";
     board.style['grid-template-rows'] = `repeat(${boardResolution}, 1fr)`;
     board.style['grid-template-columns']= `repeat(${boardResolution}, 1fr)`;
@@ -170,17 +170,33 @@ const ScreenController = (() => {
         newCell.classList.add('board-cell');
         newCell.setAttribute('data-grid-row', row);
         newCell.setAttribute('data-grid-col', col);
-        newCell.addEventListener(
+        board.appendChild(newCell);
+      }
+    }
+  }
+
+  function deactivateBoard() {
+    let cells = board.children;
+    for (let cell of cells) {
+      cell.toggleAttribute('disabled', true);
+    }
+  }
+
+  function activateBoard() {
+    let cells = board.children;
+    for (let cell of cells) {
+      cell.toggleAttribute('disabled', false);
+      cell.addEventListener(
           'click', () => {
             try {
-              updateCell(row, col, GameController.getCurrentPlayer().getMark())
-              GameController.takeTurn(row, col)
+              updateCell(cell, GameController.getCurrentPlayer().getMark())
+              GameController.takeTurn(cell.getAttribute('data-grid-row'), cell.getAttribute('data-grid-col'))
               let gameState = GameController.checkGameState();
               if (gameState.over && gameState.win) {
-                disableBoard();
+                deactivateBoard();
                 console.log(`Player ${gameState.mark} wins!`)
               } else if (gameState.over && !gameState.win) {
-                disableBoard();
+                deactivateBoard();
                 console.log("It's a tie!")
               }
             } catch(error) {
@@ -188,28 +204,23 @@ const ScreenController = (() => {
             }
           }
         )
-        board.appendChild(newCell);
-      }
     }
   }
 
-  function disableBoard() {
-    let cells = board.children;
-    for (let cell of cells) {
-      cell.toggleAttribute('disabled', true);
-    }
-  }
-
-  function updateCell(row, col, mark) {
-    let cell = document.querySelector(`[data-grid-row="${row}"][data-grid-col="${col}"]`);
+  function updateCell(cell, mark) {
     cell.innerText = mark;
   }
 
   return {
     drawBoard,
+    activateBoard,
+    deactivateBoard,
   }
 })()
 
+
+ScreenController.drawBoard();
+ScreenController.deactivateBoard();
 
 const startButton = document.querySelector('.start-button');
 startButton.addEventListener('click', () => {
@@ -226,6 +237,7 @@ startButton.addEventListener('click', () => {
   try {
     GameController.startGame(boardResolutionInputValue, players);
     ScreenController.drawBoard(boardResolutionInputValue);
+    ScreenController.activateBoard();
   } catch (error) {
     console.error(error);
   }
