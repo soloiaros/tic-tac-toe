@@ -24,3 +24,19 @@ main {
   flex-direction: column;
   background: lightblue;
 }
+
+.board-cell {
+  background-color: gray;
+  border: 3px solid white;
+}
+
+.board-cell:hover {
+  background-color: lightgray;
+}
+
+.board {
+  width: 500px;
+  height: 500px;
+  display: grid;
+  gap: 3px
+}

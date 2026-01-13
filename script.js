@@ -65,29 +65,34 @@ const Gameboard = ((boardResolution) => {
   }
 })
 
-const Player = (mark) => {
+const Player = (name, mark) => {
   function getMark() {
     return mark
   }
+  
+  function getName() {
+    return name
+  }
   return {
     getMark,
+    getName
   }
 }
 
 const GameController = (() => {
-  const gameboard = null;
-  const players = [];
+  let gameboard = null;
+  let players = [];
   let currentPlayer = 0;
 
   function startGame(boardResolution, playersInput) {
     if (+boardResolution === NaN || 2 > +boardResolution || +boardResolution > 16) {
       throw new Error('Inappropriate board size.')
     }
-    if (players.length < 2 || playersInput.filter(x => x instanceof Player).length !== playersInput.length) {
-      throw new Error('Inappropriate player amount or some of the passed players are not instances of the Player object.')
+    if (playersInput.length < 2) {
+      throw new Error('Inappropriate player amount.')
     }
     gameboard = Gameboard(Number(boardResolution));
-    players.concat(playersInput);
+    players = players.concat(playersInput);
     return true
   }
 
@@ -113,31 +118,6 @@ const GameController = (() => {
       return { over: false, win: false, mark: null }
   }
 
-  // function initiateGameLoop(players) {
-  //   gameloop: while (true) {
-  //     round: for (let player of players) {
-  //       turn: while (true) {
-  //         let [row, col] = prompt(`Now is ${player.mark}'s turn. Input row/column coords, space-separated.`).split(' ').map(x => Number(x));
-  //         if (gameboard.checkCellEmpty(row, col)) {
-  //           gameboard.placeMark(row, col, player.mark);
-  //           console.table(gameboard.getBoard());
-  //           break turn;
-  //         } else {
-  //           console.log('This coordinate has already been taken');
-  //         }
-  //       }
-  //       let winningConditions = gameboard.checkWinningConditions();
-  //       if (winningConditions) {
-  //         console.log(`Player ${winningConditions.mark} has won!`);
-  //         break gameloop;
-  //       }
-  //       if (gameboard.checkTie()) {
-  //         console.log(`It's a tie! No one wins today.`);
-  //         break gameloop;
-  //       }
-  //     }
-  //   }
-  // }
   return {
     startGame,
     getCurrentPlayer,
@@ -146,22 +126,49 @@ const GameController = (() => {
   }
 })();
 
-const ScreenController = (Gameboard) => {
+const ScreenController = (() => {
   function drawBoard(boardResolution) {
     const board = document.querySelector('.board');
-    board.style.gridTemplate = `repeat(1fr, ${boardResolution})`;
+    board.style['grid-template-rows'] = `repeat(${boardResolution}, 1fr)`;
+    board.style['grid-template-columns']= `repeat(${boardResolution}, 1fr)`;
 
     for (let row = 0; row < boardResolution; row++) {
       for (let col = 0; col < boardResolution; col++) {
-        let newCell = document.createElement('.div');
+        let newCell = document.createElement('div');
         newCell.classList.add('board-cell');
         newCell.addEventListener(
-          'click', Gameboard.placeMark
+          'click', () => {
+            GameController.takeTurn(row, col)
+          }
         )
+        board.appendChild(newCell);
       }
     }
   }
-}
 
-// GameController.initializeBoard();
-// GameController.initiateGameLoop([Player('x'), Player('o')]);
+  return {
+    drawBoard,
+  }
+})()
+
+
+const startButton = document.querySelector('.start-button');
+startButton.addEventListener('click', () => {
+  let boardResolutionInputValue = document.querySelector('#board-resolution').value;
+  let playerDivs = document.getElementsByClassName('player-container');
+  let players = [];
+  for (let playerDiv of playerDivs) {
+    let newPlayerName = playerDiv.querySelector('.player-name').value;
+    let newPlayerMark = playerDiv.querySelector('.player-mark').value;
+    let newPlayer = Player(newPlayerName, newPlayerMark);
+    players.push(newPlayer);
+  }
+
+  try {
+    GameController.startGame(boardResolutionInputValue, players);
+    ScreenController.drawBoard(boardResolutionInputValue);
+  } catch (error) {
+    console.error(error);
+  }
+
+})
