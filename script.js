@@ -132,6 +132,33 @@ const GameController = (() => {
 const ScreenController = (() => {
   const board = document.querySelector('.board');
 
+  const addPlayerButton = document.querySelector('button.add-player');
+  addPlayerButton.addEventListener(
+    'click', () => {
+      let newPlayerDiv = Array.from(document.querySelectorAll('.players .player-container')).at(-1).cloneNode(true);
+      let [newPlayerName, newPlayerMark] = [newPlayerDiv.querySelectorAll('label')[0], newPlayerDiv.querySelectorAll('label')[1]]
+
+      let newPlayerIndex = typeof +newPlayerName.querySelector('.player-name').value.at(-1) === 'number' ? +newPlayerName.querySelector('.player-name').value.at(-1) + 1 : 1;
+      newPlayerName.querySelector('.player-name').value = 'Player ' + newPlayerIndex;
+      newPlayerName.setAttribute('for', `player-name-${newPlayerIndex}`);
+      newPlayerName.querySelector('.player-name').setAttribute('id', `player-name-${newPlayerIndex}`);
+      newPlayerName.querySelector('.player-name').setAttribute('name', `player-name-${newPlayerIndex}`);
+      newPlayerName.querySelector('.player-name').setAttribute('value', `Player ${newPlayerIndex}`);
+      newPlayerMark.setAttribute('for', `player-mark-${newPlayerIndex}`);
+      newPlayerMark.querySelector('.player-mark').setAttribute('id', `player-mark-${newPlayerIndex}`);
+      newPlayerMark.querySelector('.player-mark').setAttribute('name', `player-mark-${newPlayerIndex}`);
+
+      let removePlayerButton = document.createElement('button');
+      removePlayerButton.classList.add('remove-player');
+      removePlayerButton.addEventListener(
+        'click', () => newPlayerDiv.parentElement.removeChild(newPlayerDiv)
+      )
+      newPlayerDiv.appendChild(removePlayerButton);
+
+      addPlayerButton.parentElement.insertBefore(newPlayerDiv, addPlayerButton);
+    }
+  )
+
   function drawBoard(boardResolution) {
     board.innerHTML = "";
     board.style['grid-template-rows'] = `repeat(${boardResolution}, 1fr)`;
