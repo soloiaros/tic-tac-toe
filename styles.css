@@ -1,7 +1,28 @@
+@font-face {
+    font-family: 'Coiny';
+    src: url('fonts/Coiny-Regular.woff2') format('woff2'),
+        url('fonts/Coiny-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 :root {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  --body-bg: #272727;
+  --cards-bg: #3D3D3D;
+  --playful-blue: #0072BB;
+  --light-green: #8FC93A;
+  --golden-yellow: #E4CC37;
+  --chestnut: #E4CC37;
+}
+
+body {
+  background-color: var(--body-bg);
+  color: #fff;
+  font-family: "Coiny", Arial, Helvetica, sans-serif
 }
 
 main {
@@ -11,18 +32,26 @@ main {
 }
 
 .controls {
-  height: 400px;
   display: flex;
   flex-direction: column;
   flex: 1 0 50px;
-  background: lightblue;
+  background: var(--cards-bg);
+  padding: 1.5rem;
+  gap: 1rem;
+  border-radius: 16px;
 }
 
 .game-area {
   display: flex;
-  height: 400px;
   flex-direction: column;
-  background: lightblue;
+  background: var(--cards-bg);
+  padding: 1.5rem;
+  border-radius: 16px;
+}
+
+.players {
+  display: grid;
+  gap: 1.5rem
 }
 
 .board-cell {
@@ -44,4 +73,36 @@ main {
   height: 500px;
   display: grid;
   gap: 3px
+}
+
+.game-info {
+  content: "aaa";
+}
+
+input[type="text"],
+input[type="number"],
+button {
+  font-size: 1rem;
+  font-family: inherit;
+  padding: .5rem;
+}
+
+label {
+  font-size: 1.2rem
+}
+
+button.start-button {
+  background-color: var(--golden-yellow);
+  border-radius: 1em;
+  font-size: 1.4rem;
+  padding: .7rem;
+  border: none;
+  margin-top: 1.5rem
+}
+
+button.add-player {
+  background-color: var(--light-green);
+  border: none;
+  border-radius: 1em;
+  font-size: 1.1rem;
 }
