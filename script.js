@@ -135,10 +135,12 @@ const ScreenController = (() => {
   const addPlayerButton = document.querySelector('button.add-player');
   addPlayerButton.addEventListener(
     'click', () => {
-      let newPlayerDiv = Array.from(document.querySelectorAll('.players .player-container')).at(-1).cloneNode(true);
-      let [newPlayerName, newPlayerMark] = [newPlayerDiv.querySelectorAll('label')[0], newPlayerDiv.querySelectorAll('label')[1]]
+      let newPlayerDiv = document.querySelector('.players .player-container').cloneNode(true);
+      let previousPlayerDiv = Array.from(document.querySelectorAll('.players .player-container')).at(-1)
+      let [newPlayerName, newPlayerMark] = [newPlayerDiv.querySelectorAll('label')[0], newPlayerDiv.querySelectorAll('label')[1]];
+      let previousPlayerName = previousPlayerDiv.querySelector('label');
 
-      let newPlayerIndex = typeof +newPlayerName.querySelector('.player-name').value.at(-1) === 'number' ? +newPlayerName.querySelector('.player-name').value.at(-1) + 1 : 1;
+      let newPlayerIndex = !isNaN(+previousPlayerName.querySelector('.player-name').value.at(-1)) ? +previousPlayerName.querySelector('.player-name').value.at(-1) + 1 : 1;
       newPlayerName.querySelector('.player-name').value = 'Player ' + newPlayerIndex;
       newPlayerName.setAttribute('for', `player-name-${newPlayerIndex}`);
       newPlayerName.querySelector('.player-name').setAttribute('id', `player-name-${newPlayerIndex}`);
@@ -149,6 +151,7 @@ const ScreenController = (() => {
       newPlayerMark.querySelector('.player-mark').setAttribute('name', `player-mark-${newPlayerIndex}`);
 
       let removePlayerButton = document.createElement('button');
+      removePlayerButton.textContent = "-";
       removePlayerButton.classList.add('remove-player');
       removePlayerButton.addEventListener(
         'click', () => newPlayerDiv.parentElement.removeChild(newPlayerDiv)
