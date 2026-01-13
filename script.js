@@ -85,6 +85,9 @@ const GameController = (() => {
   let currentPlayer = 0;
 
   function startGame(boardResolution, playersInput) {
+    currentPlayer = 0;
+    players = [];
+    gameboard = null;
     if (+boardResolution === NaN || 2 > +boardResolution || +boardResolution > 16) {
       throw new Error('Inappropriate board size.')
     }
@@ -130,6 +133,7 @@ const ScreenController = (() => {
   const board = document.querySelector('.board');
 
   function drawBoard(boardResolution) {
+    board.innerHTML = "";
     board.style['grid-template-rows'] = `repeat(${boardResolution}, 1fr)`;
     board.style['grid-template-columns']= `repeat(${boardResolution}, 1fr)`;
 
@@ -142,12 +146,14 @@ const ScreenController = (() => {
         newCell.addEventListener(
           'click', () => {
             try {
-              GameController.takeTurn(row, col)
               updateCell(row, col, GameController.getCurrentPlayer().getMark())
+              GameController.takeTurn(row, col)
               let gameState = GameController.checkGameState();
               if (gameState.over && gameState.win) {
+                disableBoard();
                 console.log(`Player ${gameState.mark} wins!`)
               } else if (gameState.over && !gameState.win) {
+                disableBoard();
                 console.log("It's a tie!")
               }
             } catch(error) {
@@ -157,6 +163,13 @@ const ScreenController = (() => {
         )
         board.appendChild(newCell);
       }
+    }
+  }
+
+  function disableBoard() {
+    let cells = board.children;
+    for (let cell of cells) {
+      cell.toggleAttribute('disabled', true);
     }
   }
 

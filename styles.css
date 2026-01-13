@@ -30,6 +30,11 @@ main {
   border: 3px solid white;
 }
 
+.board-cell[disabled] {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
 .board-cell:hover {
   background-color: lightgray;
 }
