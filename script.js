@@ -107,7 +107,7 @@ const GameController = (() => {
     return true
   }
 
-  function checkGameEnd() {
+  function checkGameState() {
     let winningConditions = gameboard.checkWinningConditions();
       if (winningConditions) {
         return { over: true, win: true, mark: winningConditions.mark }
@@ -122,13 +122,14 @@ const GameController = (() => {
     startGame,
     getCurrentPlayer,
     takeTurn,
-    checkGameEnd,
+    checkGameState,
   }
 })();
 
 const ScreenController = (() => {
+  const board = document.querySelector('.board');
+
   function drawBoard(boardResolution) {
-    const board = document.querySelector('.board');
     board.style['grid-template-rows'] = `repeat(${boardResolution}, 1fr)`;
     board.style['grid-template-columns']= `repeat(${boardResolution}, 1fr)`;
 
@@ -136,14 +137,32 @@ const ScreenController = (() => {
       for (let col = 0; col < boardResolution; col++) {
         let newCell = document.createElement('div');
         newCell.classList.add('board-cell');
+        newCell.setAttribute('data-grid-row', row);
+        newCell.setAttribute('data-grid-col', col);
         newCell.addEventListener(
           'click', () => {
-            GameController.takeTurn(row, col)
+            try {
+              GameController.takeTurn(row, col)
+              updateCell(row, col, GameController.getCurrentPlayer().getMark())
+              let gameState = GameController.checkGameState();
+              if (gameState.over && gameState.win) {
+                console.log(`Player ${gameState.mark} wins!`)
+              } else if (gameState.over && !gameState.win) {
+                console.log("It's a tie!")
+              }
+            } catch(error) {
+              console.log(error)
+            }
           }
         )
         board.appendChild(newCell);
       }
     }
+  }
+
+  function updateCell(row, col, mark) {
+    let cell = document.querySelector(`[data-grid-row="${row}"][data-grid-col="${col}"]`);
+    cell.innerText = mark;
   }
 
   return {
