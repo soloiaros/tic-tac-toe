@@ -70,47 +70,98 @@ const Player = (mark) => {
     return mark
   }
   return {
-    mark,
     getMark,
   }
 }
 
-const GameController = ((players) => {
-  let boardResolution = prompt('Input dimesions of the board (from 2 to 16).');
-  while (true) {
-    if (+boardResolution !== NaN && 2 <= +boardResolution && +boardResolution <= 16) {break} else {
-      boardResolution = prompt('Please, input the dimensions using integer between 2 and 16.');
+const GameController = (() => {
+  const gameboard = null;
+  const players = [];
+  let currentPlayer = 0;
+
+  function startGame(boardResolution, playersInput) {
+    if (+boardResolution === NaN || 2 > +boardResolution || +boardResolution > 16) {
+      throw new Error('Inappropriate board size.')
     }
+    if (players.length < 2 || playersInput.filter(x => x instanceof Player).length !== playersInput.length) {
+      throw new Error('Inappropriate player amount or some of the passed players are not instances of the Player object.')
+    }
+    gameboard = Gameboard(Number(boardResolution));
+    players.concat(playersInput);
+    return true
   }
-  const gameboard = Gameboard(Number(boardResolution));
-  function initiateGameLoop() {
-    gameloop: while (true) {
-      round: for (let player of players) {
-        turn: while (true) {
-          let [row, col] = prompt(`Now is ${player.mark}'s turn. Input row/column coords, space-separated.`).split(' ').map(x => Number(x));
-          if (gameboard.checkCellEmpty(row, col)) {
-            gameboard.placeMark(row, col, player.mark);
-            console.table(gameboard.getBoard());
-            break turn;
-          } else {
-            console.log('This coordinate has already been taken');
-          }
-        }
-        let winningConditions = gameboard.checkWinningConditions();
-        if (winningConditions) {
-          console.log(`Player ${winningConditions.mark} has won!`);
-          break gameloop;
-        }
-        if (gameboard.checkTie()) {
-          console.log(`It's a tie! No one wins today.`);
-          break gameloop;
-        }
+
+  const getCurrentPlayer = () => players[currentPlayer];
+
+  function takeTurn(row, col) {
+    if (!gameboard.checkCellEmpty(row, col)) {
+      throw new Error('The cell is already taken');
+    }
+    gameboard.placeMark(row, col, players[currentPlayer].getMark());
+    currentPlayer = (currentPlayer + 1) % players.length;
+    return true
+  }
+
+  function checkGameEnd() {
+    let winningConditions = gameboard.checkWinningConditions();
+      if (winningConditions) {
+        return { over: true, win: true, mark: winningConditions.mark }
+      }
+      if (gameboard.checkTie()) {
+        return { over: true, win: false, mark: null}
+      }
+      return { over: false, win: false, mark: null }
+  }
+
+  // function initiateGameLoop(players) {
+  //   gameloop: while (true) {
+  //     round: for (let player of players) {
+  //       turn: while (true) {
+  //         let [row, col] = prompt(`Now is ${player.mark}'s turn. Input row/column coords, space-separated.`).split(' ').map(x => Number(x));
+  //         if (gameboard.checkCellEmpty(row, col)) {
+  //           gameboard.placeMark(row, col, player.mark);
+  //           console.table(gameboard.getBoard());
+  //           break turn;
+  //         } else {
+  //           console.log('This coordinate has already been taken');
+  //         }
+  //       }
+  //       let winningConditions = gameboard.checkWinningConditions();
+  //       if (winningConditions) {
+  //         console.log(`Player ${winningConditions.mark} has won!`);
+  //         break gameloop;
+  //       }
+  //       if (gameboard.checkTie()) {
+  //         console.log(`It's a tie! No one wins today.`);
+  //         break gameloop;
+  //       }
+  //     }
+  //   }
+  // }
+  return {
+    startGame,
+    getCurrentPlayer,
+    takeTurn,
+    checkGameEnd,
+  }
+})();
+
+const ScreenController = (Gameboard) => {
+  function drawBoard(boardResolution) {
+    const board = document.querySelector('.board');
+    board.style.gridTemplate = `repeat(1fr, ${boardResolution})`;
+
+    for (let row = 0; row < boardResolution; row++) {
+      for (let col = 0; col < boardResolution; col++) {
+        let newCell = document.createElement('.div');
+        newCell.classList.add('board-cell');
+        newCell.addEventListener(
+          'click', Gameboard.placeMark
+        )
       }
     }
   }
-  return {
-    initiateGameLoop,
-  }
-})([Player('x'), Player('o')]);
+}
 
-GameController.initiateGameLoop();
+// GameController.initializeBoard();
+// GameController.initiateGameLoop([Player('x'), Player('o')]);

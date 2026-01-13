@@ -1,0 +1,26 @@
+:root {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  gap: 2rem;
+}
+
+.controls {
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 50px;
+  background: lightblue;
+}
+
+.game-area {
+  display: flex;
+  height: 400px;
+  flex-direction: column;
+  background: lightblue;
+}

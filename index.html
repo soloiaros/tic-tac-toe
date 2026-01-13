@@ -5,8 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tic-Tac-Toe</title>
   <script src="script.js"></script>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  
+  <main>
+    <div class="controls">
+      <div class="players">
+        <div class="player-1">
+          <label for="player-name-1">Player's Name
+            <input class="player-name" id="player-name-1" name="player-name-1" value="Player 1">
+          </label>
+          <label for="player-mark-1">Player's Mark
+            <input class="player-mark" id="player-mark-1" name="player-mark-1" value="X">
+          </label>
+        </div>
+        <div class="player-2">
+          <label for="player-name-2">Player's Name
+            <input class="player-name" id="player-name-2" name="player-name-2" value="Player 2">
+          </label>
+          <label for="player-mark-2">Player's Mark
+            <input class="player-mark" id="player-mark-2" name="player-mark-2" value="O">
+          </label>
+        </div>
+        <button class="add-player">+</button>
+      </div>
+      <label for="board-resolution">Board's resolution (between 2 and 16)
+        <input type="number" min="2" max="16" id="board-resolution" name="board-resolution">
+      </label>
+      <button>Start new game</button>
+    </div>
+    <div class="game-area">
+      <div class="game-info"></div>
+      <div class="canvas">
+        <div class="board"></div>
+      </div>
+    </div>
+  </main>
 </body>
 </html>
