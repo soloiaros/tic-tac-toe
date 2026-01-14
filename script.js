@@ -101,6 +101,8 @@ const GameController = (() => {
 
   const getCurrentPlayer = () => players[currentPlayer];
 
+  const getPreviousPlayer = () => players.at(currentPlayer - 1);
+
   function takeTurn(row, col) {
     if (!gameboard.checkCellEmpty(row, col)) {
       throw new Error('The cell is already taken');
@@ -124,6 +126,7 @@ const GameController = (() => {
   return {
     startGame,
     getCurrentPlayer,
+    getPreviousPlayer,
     takeTurn,
     checkGameState,
   }
@@ -224,7 +227,7 @@ const ScreenController = (() => {
               let gameState = GameController.checkGameState();
               if (gameState.over && gameState.win) {
                 deactivateBoard();
-                gameInfo.textContent = `${GameController.getCurrentPlayer().getName()} wins! Time for revenge 😈`;
+                gameInfo.textContent = `${GameController.getPreviousPlayer().getName()} wins! Time for revenge 😈`;
                 gameInfo.setAttribute('data-state', 'win');
               } else if (gameState.over && !gameState.win) {
                 deactivateBoard();
@@ -243,7 +246,7 @@ const ScreenController = (() => {
   }
 
   function updateCell(cell, mark) {
-    cell.innerText = mark;
+    cell.innerHTML = `<span>${mark}</span>`;
   }
 
   return {

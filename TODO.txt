@@ -1,5 +1,0 @@
-1. An optional 'override' feature: each player is given three attempts at overriding an already placed mark
-2. An option to set a custom timer, like in chess. Would be especially interesting for large boards
-3. Add a "recommended settings" checkbox that will set optimal settings for the given board size
-4. Randomize button for player's mark with selection of fun symbols
-5. A slight shift in the core mechanic: now it's enough to get 3-in-a-row to win
