@@ -22,7 +22,8 @@
 body {
   background-color: var(--body-bg);
   color: #fff;
-  font-family: "Coiny", Arial, Helvetica, sans-serif
+  font-family: "Coiny", Arial, Helvetica, sans-serif;
+  text-wrap: pretty;
 }
 
 main {
@@ -51,7 +52,14 @@ main {
 
 .players {
   display: grid;
-  gap: 1.5rem
+  gap: 1.5rem;
+  justify-items: center;
+}
+
+.player-container {
+  background-color: gray;
+  padding: 1rem 1.8rem 1.2rem;
+  border-radius: .5lh;
 }
 
 .board-cell {
@@ -77,6 +85,11 @@ main {
 
 .game-info {
   content: "aaa";
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+
 }
 
 input[type="text"],
@@ -105,4 +118,30 @@ button.add-player {
   border: none;
   border-radius: 1em;
   font-size: 1.1rem;
+  width: 30%;
+  aspect-ratio: 1 / 1;
+}
+
+.game-info {
+  text-align: center;
+  padding: 1rem;
+  font-size: 1.6rem;
+  background-color: gray;
+  border-radius: 1lh;
+  margin: .8rem;
+  text-shadow: 0 0 25px #fff;
+}
+.game-info[data-state="ongoing"] {
+  background-color: var(--playful-blue);
+}
+.game-info[data-state="win"] {
+  background-color: var(--light-green);
+}
+.game-info[data-state="tie"] {
+  background-color: var(--golden-yellow);
+}
+
+.top-highlight-element {
+  box-shadow: 
+    inset 0 1px 2px #ffffff50;
 }

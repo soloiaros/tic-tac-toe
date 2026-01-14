@@ -75,7 +75,7 @@ const Player = (name, mark) => {
   }
   return {
     getMark,
-    getName
+    getName,
   }
 }
 
@@ -162,6 +162,30 @@ const ScreenController = (() => {
     }
   )
 
+  const startButton = document.querySelector('.start-button');
+  startButton.addEventListener('click', () => {
+    let boardResolutionInputValue = document.querySelector('#board-resolution').value;
+    let playerDivs = document.getElementsByClassName('player-container');
+    let players = [];
+    for (let playerDiv of playerDivs) {
+      let newPlayerName = playerDiv.querySelector('.player-name').value;
+      let newPlayerMark = playerDiv.querySelector('.player-mark').value;
+      let newPlayer = Player(newPlayerName, newPlayerMark);
+      players.push(newPlayer);
+    }
+
+    try {
+      GameController.startGame(boardResolutionInputValue, players);
+      drawBoard(boardResolutionInputValue);
+      activateBoard();
+    } catch (error) {
+      console.error(error);
+    }
+  })
+
+  const gameInfo = document.querySelector('.game-info');
+  gameInfo.textContent = 'Press the Start button!';
+
   function drawBoard(boardResolution = 3) {
     board.innerHTML = "";
     board.style['grid-template-rows'] = `repeat(${boardResolution}, 1fr)`;
@@ -187,20 +211,27 @@ const ScreenController = (() => {
 
   function activateBoard() {
     let cells = board.children;
+    gameInfo.textContent = `${GameController.getCurrentPlayer().getName()}'s Turn ("${GameController.getCurrentPlayer().getMark()}")`;
+    gameInfo.setAttribute('data-state', 'ongoing');
     for (let cell of cells) {
       cell.toggleAttribute('disabled', false);
       cell.addEventListener(
           'click', () => {
             try {
-              updateCell(cell, GameController.getCurrentPlayer().getMark())
-              GameController.takeTurn(cell.getAttribute('data-grid-row'), cell.getAttribute('data-grid-col'))
+              updateCell(cell, GameController.getCurrentPlayer().getMark());
+              GameController.takeTurn(cell.getAttribute('data-grid-row'), cell.getAttribute('data-grid-col'));
               let gameState = GameController.checkGameState();
               if (gameState.over && gameState.win) {
                 deactivateBoard();
-                console.log(`Player ${gameState.mark} wins!`)
+                gameInfo.textContent = `${GameController.getCurrentPlayer().getName()} wins! Time for revenge 😈`;
+                gameInfo.setAttribute('data-state', 'win');
               } else if (gameState.over && !gameState.win) {
                 deactivateBoard();
-                console.log("It's a tie!")
+                gameInfo.textContent = `Ok genlemen, nobody wins today. Let's try again`;
+                gameInfo.setAttribute('data-state', 'tie');
+              } else {
+                gameInfo.textContent = `${GameController.getCurrentPlayer().getName()}'s Turn ("${GameController.getCurrentPlayer().getMark()}")`;
+                gameInfo.setAttribute('data-state', 'ongoing');
               }
             } catch(error) {
               console.log(error)
@@ -224,25 +255,3 @@ const ScreenController = (() => {
 
 ScreenController.drawBoard();
 ScreenController.deactivateBoard();
-
-const startButton = document.querySelector('.start-button');
-startButton.addEventListener('click', () => {
-  let boardResolutionInputValue = document.querySelector('#board-resolution').value;
-  let playerDivs = document.getElementsByClassName('player-container');
-  let players = [];
-  for (let playerDiv of playerDivs) {
-    let newPlayerName = playerDiv.querySelector('.player-name').value;
-    let newPlayerMark = playerDiv.querySelector('.player-mark').value;
-    let newPlayer = Player(newPlayerName, newPlayerMark);
-    players.push(newPlayer);
-  }
-
-  try {
-    GameController.startGame(boardResolutionInputValue, players);
-    ScreenController.drawBoard(boardResolutionInputValue);
-    ScreenController.activateBoard();
-  } catch (error) {
-    console.error(error);
-  }
-
-})
