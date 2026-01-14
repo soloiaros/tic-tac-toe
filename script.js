@@ -151,8 +151,9 @@ const ScreenController = (() => {
       newPlayerMark.querySelector('.player-mark').setAttribute('name', `player-mark-${newPlayerIndex}`);
 
       let removePlayerButton = document.createElement('button');
-      removePlayerButton.textContent = "-";
+      removePlayerButton.textContent = "—";
       removePlayerButton.classList.add('remove-player');
+      removePlayerButton.classList.add('top-highlight-element');
       removePlayerButton.addEventListener(
         'click', () => newPlayerDiv.parentElement.removeChild(newPlayerDiv)
       )
