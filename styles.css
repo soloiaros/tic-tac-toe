@@ -49,7 +49,7 @@ main {
   background: var(--cards-bg);
   padding: 1.5rem;
   border-radius: 16px;
-  width: min(80vw, 800px);
+  width: clamp(200px, 50vw, 800px);
   align-items: center;
 }
 
@@ -84,7 +84,14 @@ button.remove-player {
 .board-cell {
   background-color: gray;
   border: 3px solid white;
+  display: grid;
+  place-content: center;
+  container-type: size;
+}
 
+.board-cell > span {
+  font-size: 70cqw;
+  line-height: 1;
 }
 
 .board-cell[disabled] {
@@ -97,14 +104,10 @@ button.remove-player {
 }
 
 .board {
-  width: min(70vw, 600px);
+  width: 85%;
   aspect-ratio: 1 / 1;
   display: grid;
   gap: 3px;
-}
-
-.game-info {
-  width: min(600px, 60%);
 }
 
 input[type="text"],
@@ -145,6 +148,7 @@ button.add-player {
   border-radius: 1lh;
   margin: .8rem;
   text-shadow: 0 0 25px #fff;
+  width: 80%
 }
 .game-info[data-state="ongoing"] {
   background-color: var(--playful-blue);
