@@ -92,6 +92,7 @@ button.remove-player {
 .board-cell > span {
   font-size: 70cqw;
   line-height: 1;
+  user-select: none;
 }
 
 .board-cell[disabled] {

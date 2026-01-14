@@ -106,10 +106,11 @@ const GameController = (() => {
   function takeTurn(row, col) {
     if (!gameboard.checkCellEmpty(row, col)) {
       throw new Error('The cell is already taken');
+    } else {
+      gameboard.placeMark(row, col, players[currentPlayer].getMark());
+      currentPlayer = (currentPlayer + 1) % players.length;
+      return true
     }
-    gameboard.placeMark(row, col, players[currentPlayer].getMark());
-    currentPlayer = (currentPlayer + 1) % players.length;
-    return true
   }
 
   function checkGameState() {
@@ -222,8 +223,9 @@ const ScreenController = (() => {
       cell.addEventListener(
           'click', () => {
             try {
-              updateCell(cell, GameController.getCurrentPlayer().getMark());
+              let currentPlayer = GameController.getCurrentPlayer();
               GameController.takeTurn(cell.getAttribute('data-grid-row'), cell.getAttribute('data-grid-col'));
+              updateCell(cell, currentPlayer.getMark());
               let gameState = GameController.checkGameState();
               if (gameState.over && gameState.win) {
                 deactivateBoard();
